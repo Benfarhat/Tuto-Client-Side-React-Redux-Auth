@@ -5,6 +5,8 @@
   - [Mise en place de React-Router et Redux](#mise-en-place-de-react-router-et-redux)
     - [A savoir sur Redux](#a-savoir-sur-redux)
     - [React-reduc et connect](#react-reduc-et-connect)
+    - [Préparation des actions et reducers](#pr%C3%A9paration-des-actions-et-reducers)
+    - [Provider et store](#provider-et-store)
 
 ## Préparation du serveur
 
@@ -148,5 +150,19 @@ Sous React, la gestion des stores est encore plus simple grace au module React-r
 * mapStateToProps: Prend l'Etat en entrée et renvoi un objet contenant la parti utile à un composant
 * mapDispatchToProps: Prend les dispatcheur et donne accès au composant aux actions qui lui sont utiles
 
+### Préparation des actions et reducers
 
+Pour les actions nous allons juste créer un fichier vide appelé index.js sous le repertoire `src/actions`. Pour ce qui est des reducers nous allons utiliser combineReducers (qui permet de combiner plusieurs reducers) et créer un fichier index.js sous `src/reducers` dans lequel nous mettrons ceci
 
+```
+import { combineReducers } from 'redux';
+
+const rootReducer = combineReducers({
+  state: (state = {}) => state
+});
+
+export default rootReducer;
+```
+### Provider et store
+
+Le Provider permet de faire passer le store vers tous les composants à travers le context (comme le Router permet de faire passer l'objet location)
