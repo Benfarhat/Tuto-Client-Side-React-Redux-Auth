@@ -118,6 +118,19 @@ Installons les modules redux et react-redux et react-router
 
 A présent dans le fichier index.js, nous allons entourer notre App avec un Provider dans lequel se trouve notre store
 
-> Dans React, les composants sont généralement classés en deux types, les composants dit de `présentation` et les composants dit `conteneur`. Chaque composant peut avoir un état, qui contiendra des valeurs aussi diverses que variées comme par exemple le menu active, la langue choisie, le nombre de clique de l'utilisateur sur un élement etc, etc,
-> Pour faire passer des valeurs ou des fonctions on utilise les props. Voila c'est aussi simple que ca! Seulement lorsque le nombre de composants augmente vous verrez que la gestions des etats et des props se complique, elle n'est pas impossible, mais plus dure à suivre et il faudra principalement toujours faire une double vérification de ce qu'on écrit. 
-> Imaginer qu'on vous dise qu'il est possible de rassembler en un seul point appelé store tout vos états, et que de facto l'accès à ce store est bien plus simple que devoir jongler entre les transferts d'etats via les props entre composants. C'est ce que permet Redux, il est inutile de l'implémenter pour une petite application, mais allons donc! Qui sait ce que deviendra cette petite application, les besoins évoluent vite alors pourquoi ne pas prendre les devant et se préparer.
+Dans React, les composants sont généralement classés en deux types, les composants dit de `présentation` et les composants dit `conteneur`. Chaque composant peut avoir un état, qui contiendra des valeurs aussi diverses que variées comme par exemple le menu active, la langue choisie, le nombre de clique de l'utilisateur sur un élement etc, etc,
+Pour faire passer des valeurs ou des fonctions on utilise les props. Voila c'est aussi simple que ca! Seulement lorsque le nombre de composants augmente vous verrez que la gestions des etats et des props se complique, elle n'est pas impossible, mais plus dure à suivre et il faudra principalement toujours faire une double vérification de ce qu'on écrit. 
+Imaginer qu'on vous dise qu'il est possible de rassembler en un seul point appelé store tout vos états, et que de facto l'accès à ce store est bien plus simple que devoir jongler entre les transferts d'etats via les props entre composants. C'est ce que permet Redux, il est inutile de l'implémenter pour une petite application, mais allons donc! Qui sait ce que deviendra cette petite application, les besoins évoluent vite alors pourquoi ne pas prendre les devant et se préparer.
+Redux est composé donc d'un store qui gère les etats et utilisent des actions permettant de dire comment faire et des reducers permettant de dire quand faire via des déclencheurs qu'on appel dispatcher. Dans votre poste radio il existe desnmécanismes qui permettent de recevoir une fréquence et de convertir le signal recu en un son dont on supprimera au maximum le bruit pour le faire écouteéaudibleSur v
+
+
+
+
+
+
+e
+
+
+
+
+
