@@ -9,10 +9,13 @@
       - [Actions  actions creators](#actions-actions-creators)
       - [Reducers](#reducers)
       - [Store](#store)
+        - [Reselect](#reselect)
       - [MiddleWare](#middleware)
+      - [Redux-thunk](#redux-thunk)
+      - [Redux-promise](#redux-promise)
+    - [Provider et store](#provider-et-store)
     - [React-reduc et connect](#react-reduc-et-connect)
     - [Préparation des actions et reducers](#pr%C3%A9paration-des-actions-et-reducers)
-    - [Provider et store](#provider-et-store)
 
 ## Préparation du serveur
 
@@ -184,10 +187,12 @@ Les actions sont envoyées au store via la fonction `store.dispatch()`
 #### Reducers
 
 Une fois que l'actions est envoyé au store, le store a besoin de savoir comment utiliser ce payload pour modifier l'etat actuel de l'application, ce sont les reducers, dans une application réel, Redux a besoin d'un unique Reducer (rootReducer) qui contiendra pour chaque action (ou plutot type d'action), comment modifier l'etat.
-Si l'application est complexe, un reducer pourrait contenir la gestion de dizaine d'actions et le fichier deviendrait vite volumineux et difficile à gérer. Redux offre la possibilité de combiner des reducers et donc de faire un reducer par composant ou domaine, etc...
+Si l'application est complexe, un reducer pourrait contenir la gestion de dizaine d'actions et le fichier deviendrait vite volumineux et difficile à gérer. Redux offre la possibilité de combiner des reducers via la fonction `combineReducers` et donc de faire un reducer par composant ou domaine. Par exemple un reducer pour la gestion des objets model, et un reducer pour la gestion de l'interface graphique.
 
 ATTENTION: `Les reducers sont des fonctions pures`. Nous ne modifions jamais le state, conformément au principes de la programmation fonctionnel et notamment des fonctions pures, un reducer rend le nouvel état (ou une nouvelle copie contenant les modifications), il ne modifie pas le state.
+En résumé un reducer permet d'avoir ceci: `(etat, action) => nouvel_etat`
 
+Pour poursuivre avec l'exemple ci dessus, nous obtenons le code suivant:
 
 ```
 const initialState = {
@@ -214,11 +219,18 @@ Notez ici l'utilisation du `spread operator` qui permet de recopier tout le cont
 Le store au niveau de Redux est unique (même chose pour Kea qui a été construit au dessus de redux), par contre pour mobX l'autre grande initiative de gestion des états, il peut y en avoir plusieurs.
 Le Store n'a pas de logique, il recoit les actions, les fait passer à travers les middleware enregistré, utilise les reducers pour calculer le nouvel état et le sauver. Ensuite il notifie tous les `listeners` qu'une modification de l'état a eu lieu, plusieurs parties de l'application dont l'UI pourront automatiquement se mettre à jour conformément au nouvel état.
 
+Sous React, le store est crée avec la fonction createStore
+
 Notez qu'un store peut être créer avec un état initial, il fournit les fonctions suivantes:
 
 * getState: pour obtenir l'état actuel 
 * dispatch: pour déclencher une action qui mettra à jour le state
 * subscribe: pour s'abonner au store (et donc notifier les listeners lors d'une modification du state) 
+
+##### Reselect
+
+Notez que si vous désirez réduire le nombre de mise à jour dans votre application React, la librairie Reselect peut répondre à cette logique.
+Imaginez que dans votre store, vous avez un objet qui s'occupe des couleurs du thème, est ce qu'il est utile de mettre à jour le thème à chaque fois que dans le store nous rajoutions un article ou modifions la langue? Reselect 
 
 #### MiddleWare
 
@@ -228,11 +240,13 @@ Les middlewares interceptent les actions envoyées vers le store, ils ont accès
 // Si nous avons besoin de store.dispatch() ou store.getState()
 const logMiddleware = ({ getState, dispatch}) => next => action => {
   console.log(`Action: ${ action.type }`)
+  dispatch({ type: 'LOG_ACTION' })
   next(action)
 }
 // sinon pas besoin de la destructuration (es6)
 const logMiddleware = store => next => action => {
   console.log(`Action: ${ action.type }`)
+  store.dispatch({ type: 'LOG_ACTION' })
   next(action)
 }
 
@@ -256,13 +270,74 @@ export default createStore(
 );
 ```
 
-Bon à savoir: Le middleware le plus populaire est [thunk](https://github.com/gaearon/redux-thunk), il offre un ensemble de nouvelle fonctionalité
+#### Redux-thunk 
+
+Bon à savoir: Le middleware le plus populaire est [thunk](https://github.com/gaearon/redux-thunk), il offre un ensemble de nouvelle fonctionalité, il vous permet d'avoir une fonction de création d'actions qui retourneront une promesse et donc de répondre aux problèmes des actions asynchrones (comme les appels à la fonction fetch)
+
+Tout comme pour notre logMiddleware, il suffit d'ajouter thunkMiddleware de `redux-thunk`
+
+```
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+
+import rootReducers from 'reducers/root';
+import logMiddleware from 'middleware/log';
+
+const initialState = { 
+  //... 
+  };
+
+const store = createStore(
+  rootReducers,
+  initialState,
+  applyMiddleware(
+    logMiddleware, 
+    thunkMiddleware
+  )
+);
+
+```
+
+Puis définir l'action creator suivant:
+
+```
+function fetchStuff(lol) {
+  return function (dispatch) {
+    dispatch(requestStuff(lol))
+    return fetch(`https://www.example.com/${lol}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveStuff(lol, json))
+      ).catch(err => dispatch(cancelStuff(err)));
+  }
+}
+
+```
+Notez que le concurrent (si l'on peut dire) de redux-thunk est [redux-saga](https://github.com/redux-saga/redux-saga), il propose une documentation assez complète a consulter [ici](https://redux-saga.js.org/docs/introduction/BeginnerTutorial.html)
+
+#### Redux-promise
+
+Tout comme redux-thunk, redux-promise offre une solution au besoin unique d'envoyer une seule promesse, sans trop de complexité, redux-promise-middleware et redux-promise-reducer permettent d'offrir une solution aux promesses
+
+
+### Provider et store
+
+Le composant Provider permet de faire passer le store vers tous les composants à travers le context (comme le Router permet de faire passer l'objet location). Pour que cet accès soit effectif, il faut connecter le composant au store
+
+
+
+WIP WIP WIP WIP
+WIP WIP WIP WIP
+WIP WIP WIP WIP
+WIP WIP WIP WIP
+
+
 
 ### React-reduc et connect
 
-Sous React, la gestion des stores est encore plus simple grace au module React-redux qui fournit la fonction connect qui grace à deux fonctions suivantes permet d'avoir l'etat et les dispatcher et de les faire passer via les props
+Sous React, c'est le module React-redux qui fournit la fonction connect qui grace à deux fonctions suivantes permet d'avoir au store, donc mise à part la possibilité d'avoir accès à store.getState et store.dispatch, il permet en option de prendre l'etat et les dispatcher et de les faire passer via les props au composant connecté
+
 * mapStateToProps: Prend l'Etat en entrée et renvoi un objet contenant la parti utile à un composant
-* mapDispatchToProps: Prend les dispatcheur et donne accès au composant aux actions qui lui sont utiles
+* mapDispatchToProps: Prend les dispatcheurs et va" binder" au composant les actions qui lui sont utiles
 
 ### Préparation des actions et reducers
 
@@ -277,6 +352,10 @@ const rootReducer = combineReducers({
 
 export default rootReducer;
 ```
-### Provider et store
 
-Le Provider permet de faire passer le store vers tous les composants à travers le context (comme le Router permet de faire passer l'objet location)
+
+
+WIP WIP WIP WIP
+WIP WIP WIP WIP
+WIP WIP WIP WIP
+WIP WIP WIP WIP
