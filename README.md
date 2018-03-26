@@ -419,3 +419,53 @@ export default class Header extends Component {
     }
 }
 ```
+Créeons notre actions avec tout d'abord (comme bonne pratique) la déclaration du type qui se fera sous `src/actions/types.js`
+
+```
+const SET_DARK_HEADER = 'SET_DARK_HEADER'
+
+export { SET_DARK_HEADER }
+```
+
+Puis sous `src/actions/index.js` déclarons notre action creator
+
+```
+import { SET_DARK_HEADER } from './types'
+
+
+export const setDarkHeader = isDark => {
+    return {
+        type: SET_DARK_HEADER,
+        payload: isDark
+    }
+} 
+```
+
+A présent ajoutons un reducer dans le fichier `reducers/theme.js` dans lequel nous mettrons juste:
+
+```
+import { SET_DARK_HEADER } from '../actions/types'
+
+
+export default function(state = true, action){
+    switch(action.type){
+        case SET_DARK_HEADER:
+        return action.payload
+    }
+    return state
+}
+```
+
+Puis modifions notre fichier `reducers/index.js` pour qu'il puisse combiner ce nouveau reducers
+
+```
+import { combineReducers } from 'redux';
+import setDarkHeaer from './theme'
+
+const rootReducer = combineReducers({
+  state: (state = {}) => state,
+  setDarkHeaer
+});
+
+export default rootReducer;
+```
