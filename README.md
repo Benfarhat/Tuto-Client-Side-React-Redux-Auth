@@ -14,8 +14,9 @@
       - [Redux-thunk](#redux-thunk)
       - [Redux-promise](#redux-promise)
     - [Provider et store](#provider-et-store)
-    - [React-reduc et connect](#react-reduc-et-connect)
     - [Préparation des actions et reducers](#pr%C3%A9paration-des-actions-et-reducers)
+    - [React-redux et connect](#react-redux-et-connect)
+    - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
 
 ## Préparation du serveur
 
@@ -106,6 +107,9 @@ export default class App extends Component {
 ```
 
 Nous pouvons ensuite supprimer le fichier `logo.svg`
+
+> Notez que la contenu de App.js est ce qu'on peut faire de plus dégueulasse. Dans la réalité, la partie header sera un autre composant, peut être que les élements aussi, la partie Main pourrait en être une autre, bref plus vous divisez et mieux c'est à condition que la division soit utile, pas la peine de nous faire un coposant si c'est juste pour mettre une balise <hr />
+
 
 Voici la nouvelle arboresence resultante:
 
@@ -321,23 +325,34 @@ Tout comme redux-thunk, redux-promise offre une solution au besoin unique d'envo
 
 ### Provider et store
 
-Le composant Provider permet de faire passer le store vers tous les composants à travers le context (comme le Router permet de faire passer l'objet location). Pour que cet accès soit effectif, il faut connecter le composant au store
+Le composant Provider permet de faire passer le store vers tous les composants à travers le context (comme le Router permet de faire passer l'objet location). Pour que cet accèes soit effectif, il faut connecter le composant au store
+
+Soit donc le contenu du fichier "index.js":
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import registerServiceWorker from './registerServiceWorker';
+
+import App from './components/App';
+import reducers from './reducers';
+
+const createStoreWithMiddleware = applyMiddleware()(createStore);
+
+ReactDOM.render(
+  <Provider store={createStoreWithMiddleware(reducers)}>
+    <App />
+  </Provider>
+, document.getElementById('root'));
 
 
+registerServiceWorker();
+```
 
-WIP WIP WIP WIP
-WIP WIP WIP WIP
-WIP WIP WIP WIP
-WIP WIP WIP WIP
+Un message d'erreur vous avertira que l'application ne trouve pas les reducers, corrigeons ceci dans la partie qui suit.
 
-
-
-### React-reduc et connect
-
-Sous React, c'est le module React-redux qui fournit la fonction connect qui grace à deux fonctions suivantes permet d'avoir au store, donc mise à part la possibilité d'avoir accès à store.getState et store.dispatch, il permet en option de prendre l'etat et les dispatcher et de les faire passer via les props au composant connecté
-
-* mapStateToProps: Prend l'Etat en entrée et renvoi un objet contenant la parti utile à un composant
-* mapDispatchToProps: Prend les dispatcheurs et va" binder" au composant les actions qui lui sont utiles
 
 ### Préparation des actions et reducers
 
@@ -353,9 +368,54 @@ const rootReducer = combineReducers({
 export default rootReducer;
 ```
 
+### React-redux et connect
 
+Sous React, c'est le module React-redux qui fournit la fonction connect qui grace à deux fonctions suivantes permet d'avoir au store, donc mise à part la possibilité d'avoir accès à store.getState et store.dispatch, il permet en option de prendre l'etat et les dispatcher et de les faire passer via les props au composant connecté
 
-WIP WIP WIP WIP
-WIP WIP WIP WIP
-WIP WIP WIP WIP
-WIP WIP WIP WIP
+* mapStateToProps: Prend l'Etat en entrée et renvoi un objet contenant la parti utile à un composant
+* mapDispatchToProps: Prend les dispatcheurs et va" binder" au composant les actions qui lui sont utiles
+
+### Imaginons un cas d'utilisation des redux.
+
+Supposons que nous voulions qu'en cliquant sur le titre, nous modifions la barre supérieur en passant d'un fond gris (bg-dark) à un fond bleu (bg-info)
+Mettons notre header dans un composant que nous appelerons Header, ainsi App.js devient:
+
+```
+import React, { Component } from 'react';
+import Header from './Header'
+
+export default class App extends Component {
+  render() {
+    return (
+      <div>
+        <Header />
+        <main className="mt-3 container">
+          <h1 className="pt-5">Header</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla interdum mauris eget pulvinar.</p>
+        </main>
+      </div>
+    );
+  }
+}
+```
+
+et notre nouveau fichier `components/Header.js`:
+
+```
+import React, { Component } from 'react'
+
+export default class Header extends Component {
+    render () {
+        return (
+        <header>
+            <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+              <a className="navbar-brand" href="/">Title</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
+              </button>
+            </nav>
+          </header>
+        )
+    }
+}
+```
