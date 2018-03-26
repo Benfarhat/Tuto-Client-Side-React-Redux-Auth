@@ -12,18 +12,19 @@ class Header extends Component {
         }  
     }
 
-    setBgHeader = () => {
+    getBgHeader = () => {
         if(this.props.isDarkHeader){
-            return 'info'
+            return "navbar navbar-expand-md navbar-dark fixed-top bg-info"
           } else {
-            return 'dark'
+            return "navbar navbar-expand-md navbar-dark fixed-top bg-dark"
         }  
     }  
      
     render () {
+        console.log(this.props)
         return (
         <header>
-            <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-{this.setDarkHeader()}">
+            <nav className={this.getBgHeader()}>
               { this.setBgHeaderMenu() }
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
@@ -36,7 +37,7 @@ class Header extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        isDarkHeader: state.setDarkHeader
+        isDarkHeader: state.isDarkHeader
     }
 }
 
