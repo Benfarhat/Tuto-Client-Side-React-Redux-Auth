@@ -21,6 +21,7 @@
     - [React-redux et connect](#react-redux-et-connect)
     - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
     - [HandleClick et preventDefault](#handleclick-et-preventdefault)
+    - [Etat de l'authentification (State)](#etat-de-lauthentification-state)
 
 ## Présentation de l'application client
 
@@ -593,3 +594,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, actions.setDarkHeader)(Header)
 
 ```
+
+### Etat de l'authentification (State)
+
+L'etat de l'authenfication sera un objet `auth` avec comme propriété un booléen `authenticated` qui indique si on est connecté ou pas et une chaine de caractère (String) `error` qui change lorsqu'une erreur d'authentification survient. Vous constaterez que nous n'avons pas pris en compte la possibilité d'y insérer un token (qui sera fait d'une autre façon)
