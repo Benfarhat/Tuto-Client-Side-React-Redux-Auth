@@ -22,6 +22,8 @@
     - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
     - [HandleClick et preventDefault](#handleclick-et-preventdefault)
     - [Etat de l'authentification (State)](#etat-de-lauthentification-state)
+  - [Mise en place des routes](#mise-en-place-des-routes)
+    - [Header en tant que menu principal](#header-en-tant-que-menu-principal)
 
 ## Présentation de l'application client
 
@@ -598,3 +600,35 @@ export default connect(mapStateToProps, actions.setDarkHeader)(Header)
 ### Etat de l'authentification (State)
 
 L'etat de l'authenfication sera un objet `auth` avec comme propriété un booléen `authenticated` qui indique si on est connecté ou pas et une chaine de caractère (String) `error` qui change lorsqu'une erreur d'authentification survient. Vous constaterez que nous n'avons pas pris en compte la possibilité d'y insérer un token (qui sera fait d'une autre façon)
+
+## Mise en place des routes
+
+Nous allons d'abord importer les méthodes suivantes
+import { Router, Route } from 'react-router';
+import { createBrowserHistory } from 'history';
+
+* Router va nous permettre d'intégrer dans le contexte de l'application l'objet history (comme Le Provider de Redux fait avec le store)
+* Route permet de faire correspondre une URL ou location dite `path` (plus ou moins exacte avec le mot clé `exact` qui doit valider jusqu'a location.pathname, ou encore le booléen `strict` qui valide jusqu'au "slash" final et avec éventuellement l'obligation d'être "case-sensitive" via le booléen `sensitive`) à un rendu particulier avec un `component`. Route fera passer les props suivant: `match`, `location` et `history`
+
+Notez que vous avez également la directive Redirect qui permet de faire ceci:
+
+```
+<Redirect from="/login" to="/signin"/>
+<Redirect from="/register" to="/signup"/>
+```
+
+Notre rendu dans index.js devient: 
+
+```
+ReactDOM.render(
+  <Provider store={createStoreWithMiddleware(reducers)}>
+    <Router history={ createBrowserHistory() }>
+        <Route path="/" component={App} />
+    </Router>
+  </Provider>
+, document.getElementById('root'));
+```
+
+### Header en tant que menu principal
+
+A présent dirigeons vers notre Header qui est (si l'on peut dire) la pierre angulaire autour de laquelle l'application fonctionne, c'est la que nous aurons nos menus, mais c'est également la que nos menus changerons (par exemple si on est connecté le signin devient signout)
