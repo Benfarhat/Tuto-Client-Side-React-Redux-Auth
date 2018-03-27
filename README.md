@@ -17,6 +17,7 @@
     - [Préparation des actions et reducers](#pr%C3%A9paration-des-actions-et-reducers)
     - [React-redux et connect](#react-redux-et-connect)
     - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
+    - [HandleClick et preventDefault](#handleclick-et-preventdefault)
 
 ## Préparation du serveur
 
@@ -527,4 +528,42 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, actions)(Header)
 ```
 
-WIP WIP WIP
+### HandleClick et preventDefault
+
+Notre problème ici c'est qu'en cliquant sur le titre nous rechargeons la page, nous allons changer notre composant Header pour qu'au clique il appelle une fonction à l'intérieur de laquelle nous appelerons la fonction preventDefault() permettant d'ignorer le fonctionnement pas défaut d'un lien lors d'un click. De même pour le titre il sera changer en utilisant la condition ternaire dans le code JSX, toujours en nous basant par la propriété (prop) setDarkHeader extraite à partir du store:
+
+```
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import * as actions from '../actions'
+
+class Header extends Component {
+
+    setBgHeaderMenu = (e) => {
+        e.preventDefault()
+        this.props.setDarkHeader(!this.props.isDarkHeader)
+    }
+
+    render () {
+        return (
+        <header>
+            <nav className={ this.props.isDarkHeader ? 'navbar navbar-expand-md navbar-dark fixed-top bg-info' : 'navbar navbar-expand-md navbar-dark fixed-top bg-dark'}>
+              <a className="navbar-brand" href="/" onClick={this.setBgHeaderMenu}>Turn to {this.props.isDarkHeader ? 'Grey' : 'Blue'}</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
+              </button>
+            </nav>
+          </header>
+        )
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        isDarkHeader: state.isDarkHeader
+    }
+}
+
+export default connect(mapStateToProps, actions.setDarkHeader)(Header)
+
+```
