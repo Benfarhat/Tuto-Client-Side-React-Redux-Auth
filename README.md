@@ -3,7 +3,7 @@
 - [Mise en place de l'Authentification au niveau d'un client utilisant React/Redux](#mise-en-place-de-lauthentification-au-niveau-dun-client-utilisant-reactredux)
   - [Présentation de l'application client](#pr%C3%A9sentation-de-lapplication-client)
     - [Les 3As](#les-3as)
-    - [Wireframe](#wireframe)
+    - [Contenu de l'application](#contenu-de-lapplication)
   - [Préparation du serveur](#pr%C3%A9paration-du-serveur)
   - [Mise en place de Redux + implémentation simple](#mise-en-place-de-redux-impl%C3%A9mentation-simple)
     - [Flux](#flux)
@@ -33,9 +33,9 @@ Attention a bien faire la différence entre les 3 fonctions de sécurité appel�
 * Autorisation: Permet de vérifier si une personne à le droit d'accèder à une ressource donnée, on peut être authentifié sans pour autant être autorisé à accéder a certaines partie d'un site, les autorisations sont principalement par personnes ou par groupe, un groupe aura un rôle particulier
 * Accounting (ou tracabilité), c'est un suivi des objets, des actions et des individus, cela vous permet de savoir quand une personne s'est connectée et ce qu'il a fait, ou encore de savoir si un message a bien été recu par son destinataire, etc ...
 
-### Wireframe
+### Contenu de l'application
 
-Le site comprendra:
+Le site comprendra les pages suivantes:
 
 | Page        | Accès           | Lien  |
 | ------------- |:-------------:| -----:|
@@ -50,8 +50,8 @@ Le site comprendra:
 Pour l'installation du serveur nous utiliserons simplement l'utilitaire [Create React App](https://github.com/facebookincubator/create-react-app).
 
 ```
-create-react-app Tuto-Client-Side-React-Redux-Auth
-cd Tuto-Client-Side-React-Redux-Auth
+create-react-app client
+cd client
 code .
 ```
 
