@@ -148,7 +148,10 @@ Redux n'est pas une librairie mais une implémentation de `Flux`.
 Qu'est ce que Flux? Flux redéfini les patterns (Modèles de conception) MVC (Model Vue Contrôleur) et MVVM (Model Vue Vue-Model) ainsi que le Two-Way Data Binding. L'implémentation proposée par Flux  est "l'`Unidirectional data flow`".
 Notez par la même occasion que dans React, les composants sont généralement classés en deux types, les composants dit de `présentation` et les composants dit `conteneur`. Chaque composant peut avoir un état, qui contiendra des valeurs aussi diverses que variées comme par exemple le menu active, la langue choisie, le nombre de clique de l'utilisateur sur un élement etc...
 
-Les composants d'une implémentation Flux sont le `store` qui contient l'état de l'application, les `actions` qui décrivent les changements suite à un évènement, et enfin les `dispatchers` qui en se basant sur l'action et le seul a pouvoir gérer les états du store.
+* Les composants de présentations: ils gèrent leur affichage en fonction des valeurs du store reçues dans props
+* Les composant conteneurs: ils contribuent à la modification du store en émettant des actions et en s'abonnant au store, ils contiennent également des composants de présentation.
+
+Les composants d'une implémentation Flux utilisent le `store` qui contient l'état de l'application, les `actions` qui décrivent les changements suite à un évènement, et enfin les `dispatchers` qui en se basant sur l'action et le seul a pouvoir gérer les états du store.
 
 
 **Fonctionnement de Flux
