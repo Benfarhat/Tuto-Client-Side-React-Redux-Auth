@@ -4,13 +4,11 @@ import * as actions from '../actions'
 
 class Header extends Component {
 
-    setBgHeaderMenu = () => {
-        if(this.props.isDarkHeader){
-            return <a className="navbar-brand" href="/" onClick={() => this.props.setDarkHeader(false)}>Title</a>
-          } else {
-            return <a className="navbar-brand" href="/" onClick={() => this.props.setDarkHeader(true)}>Title</a>
-        }  
+    setBgHeaderMenu = (e) => {
+        e.preventDefault()
+        this.props.setDarkHeader(!this.props.isDarkHeader)
     }
+
 
     getBgHeader = () => {
         if(this.props.isDarkHeader){
@@ -25,7 +23,7 @@ class Header extends Component {
         return (
         <header>
             <nav className={this.getBgHeader()}>
-              { this.setBgHeaderMenu() }
+              <a className="navbar-brand" href="/" onClick={this.setBgHeaderMenu}>Turn to {this.props.isDarkHeader ? 'Grey' : 'Blue'}</a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
               </button>
