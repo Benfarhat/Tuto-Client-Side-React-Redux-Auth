@@ -1,8 +1,11 @@
 # Mise en place de l'Authentification au niveau d'un client utilisant React/Redux
 
 - [Mise en place de l'Authentification au niveau d'un client utilisant React/Redux](#mise-en-place-de-lauthentification-au-niveau-dun-client-utilisant-reactredux)
+  - [Présentation de l'application client](#pr%C3%A9sentation-de-lapplication-client)
+    - [Les 3As](#les-3as)
+    - [Wireframe](#wireframe)
   - [Préparation du serveur](#pr%C3%A9paration-du-serveur)
-  - [Mise en place de React-Router et Redux](#mise-en-place-de-react-router-et-redux)
+  - [Mise en place de Redux + implémentation simple](#mise-en-place-de-redux-impl%C3%A9mentation-simple)
     - [Flux](#flux)
     - [Redux](#redux)
     - [Terminologie](#terminologie)
@@ -18,6 +21,29 @@
     - [React-redux et connect](#react-redux-et-connect)
     - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
     - [HandleClick et preventDefault](#handleclick-et-preventdefault)
+
+## Présentation de l'application client
+
+Nous allons nous connecter à un serveur distant dont l'auttorisation est gérée par JWT. Le code et tuto de mise en place du serveur sont ici: [https://github.com/Benfarhat/Tuto-Server-Auth-Passport-JWT](https://github.com/Benfarhat/Tuto-Server-Auth-Passport-JWT)
+
+### Les 3As
+
+Attention a bien faire la différence entre les 3 fonctions de sécurité appelé 3A:
+* Authentification: Permet de vérifier qu'une personne est bien celle qu'elle prétend via une preuve de son identité sous la forme d'un nom d'utilisateur et d'un mot de passe (il existe d'autre preuve comme l'OTP)
+* Autorisation: Permet de vérifier si une personne à le droit d'accèder à une ressource donnée, on peut être authentifié sans pour autant être autorisé à accéder a certaines partie d'un site, les autorisations sont principalement par personnes ou par groupe, un groupe aura un rôle particulier
+* Accounting (ou tracabilité), c'est un suivi des objets, des actions et des individus, cela vous permet de savoir quand une personne s'est connectée et ce qu'il a fait, ou encore de savoir si un message a bien été recu par son destinataire, etc ...
+
+### Wireframe
+
+Le site comprendra:
+
+| Page        | Accès           | Lien  |
+| ------------- |:-------------:| -----:|
+| Accueil      | public | / |
+| Connexion (login)      | public | /signin |
+| Inscription (register)      | public | /signup |
+| Ressources      | privé | /private |
+
 
 ## Préparation du serveur
 
@@ -50,7 +76,7 @@ client/
 
 Nous allons sous le répertoire `src`, ajouter le répertoire `components` pour nos composants **react** ainsi que `actions` et `reducers` pour **redux**.
 Dans le repertoire **public**, nous crérons pour nos assets les repertoires `css`, `images` et `js` (nous ne les utiliserons pas pour l'instant).
-
+ 
 Ensuite déplaçons App.js et App.css vers le repertoire components.
 
 Modifions index.js pour qu'il pointe vers la nouvelle destination de App.js.
@@ -136,7 +162,7 @@ client/
     index.js
 ```
 
-## Mise en place de React-Router et Redux
+## Mise en place de Redux + implémentation simple
 
 Installons les modules redux et react-redux et react-router
 `yarn add redux react-redux react-router`
