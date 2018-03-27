@@ -9,7 +9,7 @@ class Header extends Component {
         this.props.setDarkHeader(!this.props.isDarkHeader)
     }
 
-    render () {console.log(this)
+    render () {
         return (
         <header>
             <nav className={ this.props.isDarkHeader ? 'navbar navbar-expand-md navbar-dark fixed-top bg-info' : 'navbar navbar-expand-md navbar-dark fixed-top bg-dark'}>
