@@ -40,6 +40,7 @@
       - [form Reducer](#form-reducer)
       - [Connexion au store via reduxForm()](#connexion-au-store-via-reduxform)
       - [Le composant Field](#le-composant-field)
+      - [Données envoyés](#donn%C3%A9es-envoy%C3%A9s)
 
 ## Présentation de l'application client
 
@@ -943,13 +944,71 @@ const store = createStore(rootReducer)
 
 #### Le composant Field
 Le composant le plus important de la libraire Redux-form est `<Field />`, il va nous permettre de connecter chaque input au store.
+Il a deux attributs (props) requis:
+
+* le nom (`name`) et 
+* le type de composant (`component`) qui peut être un composant, une fonction ou un des inputs supportés par le DOM (`input`, `textarea`, `select`), 
+
+les attributs HTML sont également disponibles tel que:
+
+* type (text, number, password, radio) (voir exemple ci dessous)
+* placeholder  (voir exemple ci dessous)
+* value pour les selects (voir exemple ci dessous)
+
+On trouve également les attributs suivants:
+
+* label qui permet de créer un label avec la chaine de caractère fournie, 
+* format qui permet de formater les nombres ou les dates
+* validate qui appele un objet contenant une fonction (ou un tableau de fonctions) de validation, par exemple la fonction "required" serait comme ci `const required = value => (value ? undefined : 'Required')`
+* warn qui ajoute des règles d'avertissement, par exemple pour alphaNumeric nous aurons:
+
+```
+const alphaNumeric = value =>
+  value && /[^a-zA-Z0-9 ]/i.test(value)
+    ? 'Only alphanumeric characters'
+    : undefined
+
+```
+Il faudra bien sur afficher ces avertissement et les label selon un format précis, par exemple ci on veut gérer les label, les erreurs et les warning il faut créer un composant X qui sera utilisé comme attribut component du Field
+
+```
+const renderField = ({
+  input,
+  label,
+  type,
+  meta: { touched, error, warning }
+}) => (
+  <div>
+    <label>{label}</label>
+    <div>
+      <input {...input} placeholder={label} type={type} />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
+  </div>
+)
+
+// ...
+
+  <Field
+    name="username"
+    type="text"
+    component={renderField}
+    label="Username"
+    validate={[required, maxLength30, minLength4]}
+    warn={alphaNumeric}
+  />
+```
+
+Soit un exemple d'utilisation:
 
 ```
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 let ContactForm = props => {
-  const { handleSubmit } = props
+  const { handleSubmit, pristine, reset, submitting } = props
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -964,7 +1023,32 @@ let ContactForm = props => {
         <label htmlFor="email">Adresse Email</label>
         <Field name="email" component="input" type="email" />
       </div>
-      <button type="submit">Envoyer</button>
+      <div>
+        <label htmlFor="specialite">Spécialité</label>
+        <Field name="specialite" component="select">
+          <option />
+          <option value="react">React</option>
+          <option value="angular">Angular</option>
+          <option value="vue">VueJS</option>
+        </Field>
+      </div>
+      <div>
+        <label htmlFor="disponible">Disponible</label>
+        <Field
+          name="disponible"
+          id="disponible"
+          component="input"
+          type="checkbox"
+        />
+      </div>
+      <div>
+        <button type="submit" disabled={pristine || submitting}>
+          Envoyer
+        </button>
+        <button type="button" disabled={pristine || submitting} onClick={reset}>
+          Réinitialiser
+        </button>
+      </div>
     </form>
   )
 }
@@ -977,4 +1061,21 @@ ContactForm = reduxForm({
 export default ContactForm
 ```
 
+#### Données envoyés
 
+Les données sont envoyées au format JSON et peuvent être récupérées comme suit:
+
+```
+
+import React from 'react'
+import ContactForm from './ContactForm'
+
+class ContactPage extends React.Component {
+  submit = values => {
+    console.log(values)
+  }
+  render() {
+    return <ContactForm onSubmit={this.submit} />
+  }
+}
+```
