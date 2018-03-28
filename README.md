@@ -596,7 +596,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, actions.setDarkHeader)(Header)
+export default connect(mapStateToProps, actions)(Header)
 
 ```
 
