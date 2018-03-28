@@ -25,6 +25,12 @@
   - [Mise en place des routes](#mise-en-place-des-routes)
     - [React-router (RR4)](#react-router-rr4)
     - [Différence avec React-router-dom, React-router-native, React-router-redux](#diff%C3%A9rence-avec-react-router-dom-react-router-native-react-router-redux)
+    - [Composant Switch ou les Routes exclusives](#composant-switch-ou-les-routes-exclusives)
+      - [Position des routes](#position-des-routes)
+    - [Plusieurs composants, une route!](#plusieurs-composants-une-route)
+    - [Route par défaut, la route "Not Found"](#route-par-d%C3%A9faut-la-route-not-found)
+    - [Routes paramètres](#routes-param%C3%A8tres)
+    - [Navlink et Link](#navlink-et-link)
     - [Implémentation](#impl%C3%A9mentation)
     - [Header en tant que menu principal](#header-en-tant-que-menu-principal)
 
@@ -620,6 +626,137 @@ Les deux principaux composants de React-router sont `Router` et `Route`, le prem
 React-router-dom est une sous partie de react router puisque c'est celle que nous utilisons lorsque notre application sera sur du Web (ou plus précisément sur un navigateur). Pour ceux qui utilise React-Native permettant de faire fonctionner son application sur du mobile, une autre sous partie de React-router et React-router-native
 
 Pour ce qui est de React-router-redux, c'est une intégration entre react-redux et react-router vous permettant de controler la navigation via le store (et donc de modifier votre navigation via store.dispatch())
+
+### Composant Switch ou les Routes exclusives
+
+Regarder ce code:
+
+```
+            <Route path="/" exact component={HomePage} />
+            <Route path="/signin" component={Login} />
+            <Route path="/signup" component={Register} />
+            <Route path="/private" component={Private} />
+            <Route component={HomePage}/>
+
+```
+Ici la dernière ligne n'a pas de valeur path et donc quoi qu'il arrive il sera affiché, on parle de `routes inclusives`, si jamais nous ne voulons prendre en compte qu'une seule de ces routes (et plus précisément la première qui match) alors on doit créer des `routes exclusives` via le composant `Switch`
+
+
+```
+ReactDOM.render(
+  <Provider store={createStoreWithMiddleware(reducers)}>
+    <Router history={ createBrowserHistory() }>
+        <Switch>
+            <Route path="/" exact component={App} />
+            <Route path="/test1" component={App1} />
+            <Route path="/test2" component={App2} />
+        </Switch>
+    </Router>
+  </Provider>
+, document.getElementById('root'));
+```
+
+#### Position des routes
+
+Attention vu que la première route sera celle prise en compte dans le composant Switch, il faut faire attention à l'ordre des routes
+
+Si par exemple nous avons ceci:
+
+```
+<Switch>
+    <Route path="/" exact component={App} />
+    <Route path="/post" component={App1} />
+    <Route path="/post/add" component={App2} />
+</Switch>
+```
+Alors nous ne pourrons jamais atteindre la troisième route (à moins d'utiliser le booléen exact), pour résoudre ce soucis il faut classé les routes du plus précis vers le plus générale comme suit:
+
+```
+<Switch>
+    <Route path="/" exact component={App} />
+    <Route path="/post/add/picture" component={App5} />
+    <Route path="/post/add/title" component={App4} />
+    <Route path="/post/add/body" component={ApP3} />
+    <Route path="/post/add" component={App2} />
+    <Route path="/post" component={App1} />
+</Switch>
+```
+
+### Plusieurs composants, une route!
+
+Il est possible de rendre plusieurs composants différents pour une même route et dans plusieurs zones différentes, dans l'exemple qui suit, si l'utilisateurveut se connecter, on lui affiche le menu de connection mais en même temps le composant Login dans une autre zone, dès qu'il est connecté, on lui proposera un menu lui permettant de se déconnecter et le composant Private. Installons React-router-dome d'abord, puis testons le code suivant:
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Switch, Redirect, NavLink } from 'react-router-dom';
+
+const Application = () => (
+    <div className="header">
+      <header>
+        <Switch>
+            <Route path="/" exact component={SignInMenu} />
+            <Route path="/signin" component={SignInMenu} />
+            <Route path="/private" component={SignOutMenu} />
+        </Switch>
+      </header>
+      <main>
+        <Switch>
+            <Route path="/" exact component={HomePage} />
+            <Route path="/signin" component={Login} />
+            <Route path="/signup" component={Register} />
+            <Route path="/private" component={Private} />
+            <Route component={HomePage}/>
+        </Switch>
+      </main>
+    </div>
+  )
+  
+  
+  const HomePage =() => <div>Home Page</div>
+  const Login = () => <div>Login Page</div>
+  const Register = () => <div>Register Page</div>
+  const Private = () => <div>User Logged!</div>
+  const SignInMenu = () => <ul><NavLink to="/" exact activeClassName="active">Home Page</NavLink><NavLink to="/signin" exact activeClassName="active">Login Page</NavLink><NavLink to="/private" exact activeClassName="active">Logged Page</NavLink></ul>
+  const SignOutMenu = () => <ul><NavLink to="/" exact activeClassName="active">Home Page</NavLink><NavLink to="/" exact activeClassName="active">Logout Page</NavLink><NavLink to="/" exact activeClassName="active">Your settings</NavLink></ul>
+  
+ ReactDOM.render(<BrowserRouter><Application /></BrowserRouter>, document.getElementById('root'))
+
+``` 
+
+Notez que nous utilisons le booléen `exact` précédent vu pour ne pas avoir d'ambiguité avec les routes "/" et "/abc". Dans les versions précédentes de React-router nous avions le composant `<IndexRoute>` qui aujourd'hui est remplacé par `<Route exact>`
+
+### Route par défaut, la route "Not Found"
+
+La route par défaut est le fameux: `<Route component={HomePage}/>`, seulement lors de l'utilisation, le visiteur se retrouvera avec une URL qui peut être n'a aucun sens comme par exemple http://localhost:3000/bidon. Pour être plus claire, il est préconisé d'utiliser à la place le composant `Redirect` avec comme valeur de `to` le path de votre page par défaut:
+
+```
+        <Switch>
+            <Route path="/" exact component={HomePage} />
+            <Route path="/signin" component={Login} />
+            <Route path="/signup" component={Register} />
+            <Route path="/private" component={Private} />
+            <Redirect to="/" />
+        </Switch>
+```
+Ou au mieux garder la route vers un composant permettant de gérér les pages non trouvés
+
+
+```
+        <Switch>
+            <Route path="/" exact component={HomePage} />
+            <Route path="/signin" component={Login} />
+            <Route path="/signup" component={Register} />
+            <Route path="/private" component={Private} />
+            <Route component={Notfound} />
+```     
+
+### Routes paramètres
+
+
+### Navlink et Link
+
+
 
 ### Implémentation
 
