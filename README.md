@@ -35,6 +35,11 @@
     - [Un mot sur le composant HashRouter](#un-mot-sur-le-composant-hashrouter)
     - [Implémentation](#impl%C3%A9mentation)
     - [Header en tant que menu principal](#header-en-tant-que-menu-principal)
+  - [Formulaires avec Redux-form](#formulaires-avec-redux-form)
+    - [Redux-form](#redux-form)
+      - [form Reducer](#form-reducer)
+      - [Connexion au store via reduxForm()](#connexion-au-store-via-reduxform)
+      - [Le composant Field](#le-composant-field)
 
 ## Présentation de l'application client
 
@@ -876,3 +881,100 @@ ReactDOM.render(
 ### Header en tant que menu principal
 
 A présent dirigeons vers notre Header qui est (si l'on peut dire) la pierre angulaire autour de laquelle l'application fonctionne, c'est la que nous aurons nos menus, mais c'est également la que nos menus changerons (par exemple si on est connecté le signin devient signout)
+
+
+
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP WIP 
+
+
+## Formulaires avec Redux-form
+
+### Redux-form
+
+Au niveau de react comme partout ailleurs, les formulaires sont une sources de stress car d'un coté ils représentents le point d'entrée des données de l'utilisateur, on nous apprend d'ailleurs toujours de ne jamais faire confiance au données utilisateurs pour prendre en compte les éventuelles injections de code malveillants ou tout simplement de ne pas rempli correctement le formulaire. Au niveau de Angular le "two way databinding" ne nous permettait pas d'avoir une seule source de confiance. Bref, Redux-form vient à notre rescousse pour simplifier au niveau de React les opérations avec les formulaires en premettant de:
+
+* Connecter les formulaire au store de Redux avec l'HOC `reduxForm()`
+* En mettant en place des events-listeners (écouteurs d'évènements) des élements du formulaires
+* Dispatcher les actions redux
+* Mettre à jour le store via `formReducer`
+* Mettre à jour le contenu des composants inputs
+
+#### form Reducer
+
+Le formReducer permet de gérer les appels des actions provanant de votre formulaire, et est appelé comme suit:
+
+```
+import { createStore, combineReducers } from 'redux'
+import { reducer as formReducer } from 'redux-form'
+
+const rootReducer = combineReducers({
+  // ...
+  form: formReducer
+})
+
+const store = createStore(rootReducer)
+
+```
+
+#### Connexion au store via reduxForm()
+
+```
+import React from 'react'
+import { Field, reduxForm } from 'redux-form'
+
+let ContactForm = props => {
+  const { handleSubmit } = props
+  return <form onSubmit={handleSubmit}>{/* form body*/}</form>
+}
+
+ContactForm = reduxForm({
+  // un nom unique pour votre formulaire
+  form: 'contact'
+})(ContactForm)
+
+export default ContactForm
+const store = createStore(rootReducer)
+```
+
+#### Le composant Field
+Le composant le plus important de la libraire Redux-form est `<Field />`, il va nous permettre de connecter chaque input au store.
+
+```
+import React from 'react'
+import { Field, reduxForm } from 'redux-form'
+
+let ContactForm = props => {
+  const { handleSubmit } = props
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="username">Username</label>
+        <Field name="username" component="input" type="text" />
+      </div>
+      <div>
+        <label htmlFor="nom">Nom</label>
+        <Field name="nom" component="input" type="text" />
+      </div>
+      <div>
+        <label htmlFor="email">Adresse Email</label>
+        <Field name="email" component="input" type="email" />
+      </div>
+      <button type="submit">Envoyer</button>
+    </form>
+  )
+}
+
+ContactForm = reduxForm({
+  // Un nom unique pour votre formulaire
+  form: 'contact'
+})(ContactForm)
+
+export default ContactForm
+```
+
+

@@ -17,6 +17,11 @@ class Header extends Component {
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
               </button>
+              <ul className="nav navbar-nav">
+                <li className="nav-item">
+                    <a href="/">Sign In</a>
+                </li>
+              </ul>
             </nav>
           </header>
         )
