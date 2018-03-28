@@ -22,7 +22,7 @@
     - [Imaginons un cas d'utilisation des redux.](#imaginons-un-cas-dutilisation-des-redux)
     - [HandleClick et preventDefault](#handleclick-et-preventdefault)
     - [Etat de l'authentification (State)](#etat-de-lauthentification-state)
-  - [Mise en place des routes](#mise-en-place-des-routes)
+  - [Mise en place des routes avec React-router-dom](#mise-en-place-des-routes-avec-react-router-dom)
     - [React-router (RR4)](#react-router-rr4)
     - [Différence avec React-router-dom, React-router-native, React-router-redux](#diff%C3%A9rence-avec-react-router-dom-react-router-native-react-router-redux)
     - [Composant Switch ou les Routes exclusives](#composant-switch-ou-les-routes-exclusives)
@@ -30,7 +30,9 @@
     - [Plusieurs composants, une route!](#plusieurs-composants-une-route)
     - [Route par défaut, la route "Not Found"](#route-par-d%C3%A9faut-la-route-not-found)
     - [Routes paramètres](#routes-param%C3%A8tres)
+      - [Route ambigues](#route-ambigues)
     - [Navlink et Link](#navlink-et-link)
+    - [Un mot sur le composant HashRouter](#un-mot-sur-le-composant-hashrouter)
     - [Implémentation](#impl%C3%A9mentation)
     - [Header en tant que menu principal](#header-en-tant-que-menu-principal)
 
@@ -610,11 +612,11 @@ export default connect(mapStateToProps, actions)(Header)
 
 L'etat de l'authenfication sera un objet `auth` avec comme propriété un booléen `authenticated` qui indique si on est connecté ou pas et une chaine de caractère (String) `error` qui change lorsqu'une erreur d'authentification survient. Vous constaterez que nous n'avons pas pris en compte la possibilité d'y insérer un token (qui sera fait d'une autre façon)
 
-## Mise en place des routes
+## Mise en place des routes avec React-router-dom
 
 ### React-router (RR4)
 
-React-router est une librairie qui va nous permettre d'associer un composant à une URL et d'utiliser notamment la puissance de l'API HTML 5 `history` qui d'un coté va gérer l'historique, d'un autre de manipuler l'URL via l'objet `location` et tout cela sans que votre page soit rechargée (Rappelez vous que c'est du SPA, et que nous allons juste donner l'illusion que le site est que tout les autres bon vieux sites, constitué de plusieurs pages et dont chaque clique nécessitait pour afficher une page son chargement à partir niveau du serveur) ainsi un clique en sur le bouton retour arrière vous amène à l'affichage précédent.
+React-router est une librairie qui va nous permettre d'associer un composant à une URL et d'utiliser notamment la puissance de l'API HTML 5 `history` qui d'un coté va gérer l'historique, et d'un autre, de manipuler l'URL via l'objet `location` et tout cela sans que votre page soit rechargée (Rappelez vous que c'est du SPA, et que nous allons juste donner l'illusion que le site est que tout les autres bon vieux sites, constitué de plusieurs pages et dont chaque clique nécessitait pour afficher une page son chargement à partir niveau du serveur) ainsi un clique en sur le bouton retour arrière vous amène à l'affichage précédent.
 
 Les deux principaux composants de React-router sont `Router` et `Route`, le premier permet de dire "Attention c'est le sommaine/menu du site et le second de définir les chapitres/parties du site.
 
@@ -684,7 +686,13 @@ Alors nous ne pourrons jamais atteindre la troisième route (à moins d'utiliser
 
 ### Plusieurs composants, une route!
 
-Il est possible de rendre plusieurs composants différents pour une même route et dans plusieurs zones différentes, dans l'exemple qui suit, si l'utilisateurveut se connecter, on lui affiche le menu de connection mais en même temps le composant Login dans une autre zone, dès qu'il est connecté, on lui proposera un menu lui permettant de se déconnecter et le composant Private. Installons React-router-dome d'abord, puis testons le code suivant:
+Il est possible de rendre plusieurs composants différents pour une même route et dans plusieurs zones différentes, dans l'exemple qui suit, si l'utilisateurveut se connecter, on lui affiche le menu de connection mais en même temps le composant Login dans une autre zone, dès qu'il est connecté, on lui proposera un menu lui permettant de se déconnecter et le composant Private. 
+
+Nous avons besoin pour continuer de react-router-dom, noter que si vous utilisez react-router-dom ou react-router-native, vous n'avez pas besoin d'installer react-router, celui ci se fera implicitement puisque les deux modules dépendent de lui. Par contre react-router-redux non, ce dernier permet de faire la coordination entre Redux et React-router.
+
+Installons à présent React-router-dom via la commande `yarn add react-router-dom`, pour pouvoir utiliser le composant `BrowserRouter`, BrowsrRouter utilise l'API history d'HTML5 et donc synchronize parfaitement votre application (UI) avec l'URL. 
+
+puis testons le code suivant:
 
 ```
 import React from 'react';
@@ -731,32 +739,112 @@ Notez que nous utilisons le booléen `exact` précédent vu pour ne pas avoir d'
 La route par défaut est le fameux: `<Route component={HomePage}/>`, seulement lors de l'utilisation, le visiteur se retrouvera avec une URL qui peut être n'a aucun sens comme par exemple http://localhost:3000/bidon. Pour être plus claire, il est préconisé d'utiliser à la place le composant `Redirect` avec comme valeur de `to` le path de votre page par défaut:
 
 ```
-        <Switch>
-            <Route path="/" exact component={HomePage} />
-            <Route path="/signin" component={Login} />
-            <Route path="/signup" component={Register} />
-            <Route path="/private" component={Private} />
-            <Redirect to="/" />
-        </Switch>
+<Switch>
+    <Route path="/" exact component={HomePage} />
+    <Route path="/signin" component={Login} />
+    <Route path="/signup" component={Register} />
+    <Route path="/private" component={Private} />
+    <Redirect to="/" />
+</Switch>
 ```
 Ou au mieux garder la route vers un composant permettant de gérér les pages non trouvés
 
 
 ```
-        <Switch>
-            <Route path="/" exact component={HomePage} />
-            <Route path="/signin" component={Login} />
-            <Route path="/signup" component={Register} />
-            <Route path="/private" component={Private} />
-            <Route component={Notfound} />
+<Switch>
+    <Route path="/" exact component={HomePage} />
+    <Route path="/signin" component={Login} />
+    <Route path="/signup" component={Register} />
+    <Route path="/private" component={Private} />
+    <Route component={Notfound} />
+</Switch>
 ```     
 
 ### Routes paramètres
 
+Il est possible lors du match de votre path d'insérer un paramètre qui pourra être repris par votre composant, comme par exemple l'ID d'un utilisateur ou d'un article. Si par exemple j'ai le path `/article/:id`, alors lors de l'accès à l'URL '/article/75', la paramètre id (props.match.params.id) sera égale à 75
+
+Voici un exemple d'utilisation:
+
+```
+<Switch>
+  <Route path="/" exact component={HomePage} />
+  <Route path="/users" exact component={UsersPage} />
+  <Route path="/users/:userId" component={ProfilePage} />
+  <Route path="/articles" exact component={News} />
+  <Route path="/articles/:articleId" component={Article} />
+  <Redirect to="/" />
+</Switch>
+```
+
+Dans vos composants vous aurez accès à ces paramètres comme suit:
+
+```
+const Article = () => (
+  <div className="article">
+    ArticleDetail articleId={props.match.params.articleId} />
+  </div>
+)
+
+const ProfilePage = props => (
+  <div className="profile">
+    <UserDetail userId={props.match.params.userId} />
+  </div>
+)
+```
+
+#### Route ambigues
+
+Un autre exemple avec une route pramétrée sont les paths ambigues, Si vous ne pouvez pas changer le pattern de vos paths, mettre les élements statiques en début et le paramétré ensuite
+
+```
+<Switch>
+  <Route path="/user/search" component={UserSearch} />
+  <Route path="/user/faq" component={UserFaq} />
+  <Route path="/user/:userID" component={UserDetail} />
+</Switch>
+```
+
 
 ### Navlink et Link
 
+Link permet de créer des liens dans votre application
 
+```
+<Link to="/about">A propos</Link>
+```
+
+Au dessus de Link, e composant NavLink permet de rajouter des styles en permettant de dire que si c'est le lien actif alors il est possible de lui ajouter une classe particulière via `activeClassName` ou un objet de style via `activeStyle`. Il vous sera également possible d'avoir accès à la fonction `isActive`:
+
+```
+<NavLink
+  to="/"
+  activeClassName="active"
+>Home Page</NavLink>
+
+<NavLink
+  to="/usesr"
+  activeStyle={{
+    fontWeight: 'bold',
+    color: 'blue'
+   }}
+>Users List</NavLink>
+
+<NavLink 
+  isActive={_ => console.log("Link '/contact' is active!")} 
+  to="/contact" 
+  exact 
+  activeClassName="active"
+  >Contactez nous</NavLink>
+
+```
+
+### Un mot sur le composant HashRouter
+
+Notez juste que si vous désirez gérer les liens via la partie de l'URL se trouvant après le hash (#), le composant <HashRouter> le permet en vous permettant de configurer le basename (path de base) ainsi que le type de hash via `hashType` qui peut être égal à:
+* noslash : #user/75
+* slash : #/user/75 (par défaut)
+* hashbang : #!/user/75 (a ne pas utiliser, car deprecated par Google)
 
 ### Implémentation
 
