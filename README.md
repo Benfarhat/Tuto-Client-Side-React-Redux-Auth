@@ -23,6 +23,9 @@
     - [HandleClick et preventDefault](#handleclick-et-preventdefault)
     - [Etat de l'authentification (State)](#etat-de-lauthentification-state)
   - [Mise en place des routes](#mise-en-place-des-routes)
+    - [React-router (RR4)](#react-router-rr4)
+    - [Différence avec React-router-dom, React-router-native, React-router-redux](#diff%C3%A9rence-avec-react-router-dom-react-router-native-react-router-redux)
+    - [Implémentation](#impl%C3%A9mentation)
     - [Header en tant que menu principal](#header-en-tant-que-menu-principal)
 
 ## Présentation de l'application client
@@ -603,12 +606,28 @@ L'etat de l'authenfication sera un objet `auth` avec comme propriété un boolé
 
 ## Mise en place des routes
 
+### React-router (RR4)
+
+React-router est une librairie qui va nous permettre d'associer un composant à une URL et d'utiliser notamment la puissance de l'API HTML 5 `history` qui d'un coté va gérer l'historique, d'un autre de manipuler l'URL via l'objet `location` et tout cela sans que votre page soit rechargée (Rappelez vous que c'est du SPA, et que nous allons juste donner l'illusion que le site est que tout les autres bon vieux sites, constitué de plusieurs pages et dont chaque clique nécessitait pour afficher une page son chargement à partir niveau du serveur) ainsi un clique en sur le bouton retour arrière vous amène à l'affichage précédent.
+
+Les deux principaux composants de React-router sont `Router` et `Route`, le premier permet de dire "Attention c'est le sommaine/menu du site et le second de définir les chapitres/parties du site.
+
+* Router va nous permettre d'intégrer dans le contexte de l'application l'objet history (comme Le Provider de Redux fait avec le store)
+* Route permet de faire correspondre une URL ou location dite `path` (plus ou moins exacte avec le mot clé `exact` qui doit valider jusqu'a location.pathname, ou encore le booléen `strict` qui valide jusqu'au "slash" final et avec éventuellement l'obligation d'être "case-sensitive" via le booléen `sensitive`) à un rendu particulier avec un `component`. Route fera passer les props suivant: `match`, `location` et `history`
+
+### Différence avec React-router-dom, React-router-native, React-router-redux
+
+React-router-dom est une sous partie de react router puisque c'est celle que nous utilisons lorsque notre application sera sur du Web (ou plus précisément sur un navigateur). Pour ceux qui utilise React-Native permettant de faire fonctionner son application sur du mobile, une autre sous partie de React-router et React-router-native
+
+Pour ce qui est de React-router-redux, c'est une intégration entre react-redux et react-router vous permettant de controler la navigation via le store (et donc de modifier votre navigation via store.dispatch())
+
+### Implémentation
+
 Nous allons d'abord importer les méthodes suivantes
 import { Router, Route } from 'react-router';
 import { createBrowserHistory } from 'history';
 
-* Router va nous permettre d'intégrer dans le contexte de l'application l'objet history (comme Le Provider de Redux fait avec le store)
-* Route permet de faire correspondre une URL ou location dite `path` (plus ou moins exacte avec le mot clé `exact` qui doit valider jusqu'a location.pathname, ou encore le booléen `strict` qui valide jusqu'au "slash" final et avec éventuellement l'obligation d'être "case-sensitive" via le booléen `sensitive`) à un rendu particulier avec un `component`. Route fera passer les props suivant: `match`, `location` et `history`
+
 
 Notez que vous avez également la directive Redirect qui permet de faire ceci:
 
