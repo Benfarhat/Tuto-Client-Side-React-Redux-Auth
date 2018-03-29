@@ -965,14 +965,14 @@ On trouve également les attributs suivants:
 ```
 const alphaNumeric = value =>
   value && /[^a-zA-Z0-9 ]/i.test(value)
-    ? 'Only alphanumeric characters'
+    ? 'Seul les caractères alphanumériques sont permis'
     : undefined
 
 ```
-Il faudra bien sur afficher ces avertissement et les label selon un format précis, par exemple ci on veut gérer les label, les erreurs et les warning il faut créer un composant X qui sera utilisé comme attribut component du Field
+Il faudra bien sur afficher ces avertissement et les label selon un format précis, par exemple ci on veut gérer les label, les erreurs et les warningz il faut créer un composant X qui sera utilisé comme attribut component du Field et qui créera une sorte de template comprenant les élements meta désiré, dans notre cas nous aurons meta.touched, meta.error et meta.warning, mais il en existe d'autres comme meta.valid, meta.invalid, meta.visited ou meta.pristine
 
 ```
-const renderField = ({
+const customRenderField = ({
   input,
   label,
   type,
@@ -994,7 +994,7 @@ const renderField = ({
   <Field
     name="username"
     type="text"
-    component={renderField}
+    component={customRenderField}
     label="Username"
     validate={[required, maxLength30, minLength4]}
     warn={alphaNumeric}
