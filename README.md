@@ -41,6 +41,7 @@
       - [Connexion au store via reduxForm()](#connexion-au-store-via-reduxform)
       - [Le composant Field](#le-composant-field)
       - [Données envoyés](#donn%C3%A9es-envoy%C3%A9s)
+    - [Implémentation de reduxForm](#impl%C3%A9mentation-de-reduxform)
 
 ## Présentation de l'application client
 
@@ -924,6 +925,14 @@ const store = createStore(rootReducer)
 
 #### Connexion au store via reduxForm()
 
+Pour connecter notre formulaire au store, on utilise reduxForm qui prend en première fonction la confguration et en seconde appel le composant comprenant le formulaire. le format est comme suit:
+`export defaut reduxForm(CONFIGURATION)(COMPOSANT)`
+
+Dans la configuration le premiere paramètre est le formulaire en renseignant son nom (unique)
+
+On constate que l'utilisation est très similaire à l'appel de la fonction connect() permettant de connecté un composant à un store: `export default connect(mapStateToProps, actionCreators)(TodoApp)`
+Voici un exemple de code
+
 ```
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
@@ -1078,4 +1087,49 @@ class ContactPage extends React.Component {
     return <ContactForm onSubmit={this.submit} />
   }
 }
+```
+
+### Implémentation de reduxForm
+
+Le formulaire se trouve dans le composant Signin que nous allons créer dans le répertoire `src/components/auth`, le contenu sera comme suit:
+
+```
+import React, { Component } from 'react'
+import { reduxForm } from 'redux-form'
+
+class Signin extends Component {
+  render() {
+    return (
+      <div>
+        
+      </div>
+    )
+  }
+}
+
+
+export default reduxForm({
+    form: 'signin',
+    fields: ['username', 'password']
+})(Signin)
+```
+On définit le composant dans lequel on va inclure notre formulaire, et on le connecte au store via la fonction reduxForm qui comprend deux paramaètres, le nom du formulaire et la liste des champs
+
+Ensuite nous devons ajouter le reducer dédiée au formulaire, au combineReducers, notez que nous avons renommer notre reducer en form pour éviter la confusion:
+
+```
+import { combineReducers } from 'redux';
+import { reducer as form } from 'redux-form'
+
+// Pour la demo du tuto
+import setDarkHeader from './theme'
+
+const rootReducer = combineReducers({
+  // reduce was rename form in import stmt
+  form,
+  // Pour la demo du tuto
+  isDarkHeader: setDarkHeader
+});
+
+export default rootReducer;
 ```
