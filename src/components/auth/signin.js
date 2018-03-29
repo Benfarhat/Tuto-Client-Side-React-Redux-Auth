@@ -4,9 +4,17 @@ import { reduxForm } from 'redux-form'
 class Signin extends Component {
   render() {
     return (
-      <div>
-        
-      </div>
+      <form>
+        <fieldset classNale="form-group">
+            <label>Username:</label>
+            <input className="form-control" />
+        </fieldset>  
+        <fieldset classNale="form-group">
+            <label>Password:</label>
+            <input className="form-control" />
+        </fieldset>    
+        <button action="submit" className="btn btn-primary">Connexion</button> 
+      </form>
     )
   }
 }
