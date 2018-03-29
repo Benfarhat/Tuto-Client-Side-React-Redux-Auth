@@ -1,8 +1,13 @@
 import { combineReducers } from 'redux';
+import { reducer as form } from 'redux-form'
+
+// Pour la demo du tuto
 import setDarkHeader from './theme'
 
 const rootReducer = combineReducers({
-  state: (state = {}) => state,
+  // reduce was rename form in import stmt
+  form,
+  // Pour la demo du tuto
   isDarkHeader: setDarkHeader
 });
 
